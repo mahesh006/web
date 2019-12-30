@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js'></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href='/styles.css'rel='stylesheet'/> 
+
+  </head>
+  <body>
+   <nav class="navbar navbar-expand-lg navbar-dark bg-primary"> 
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Profile</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Notifications
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>     
+    </ul>    
+  </div>
+</nav>
+
+
+
+    <div id='mario-chat'>
+      <div id='chat-window'>
+        <TextArea id ='out'style="border:none" > </TextArea>
+        <div id="feedback"></div>
+      </div>
+      <input id='handle' type='text' placeholder='Name'/>   
+      
+      <input id='output' type='dash-style'> 
+
+     </div>
+      <button id='send'>Send</button>
+
+
+      <button  id="go"></button>
+    </div>
+    <script src='/chat.js'></script>
+    <script type="text/javascript" src=" ./script.js "></script>
+    <script>
+      function morse(input) {  
+ const 
+    audioContext = new (window.AudioContext || window.webkitAudioContext),
+    outputType = ['audio', 'vibrate', 'blink'], 
+    dit = 135, 
+    dah = dit * 3,
+    symbolSpace = dit,
+    letterSpace = dah,
+    wordSpace = dit * 7,
+    toneFrequency = 600, 
+    morseChars = {
+      " "  : "/",
+      "a"  : "·−",
+      "b"  : "−···",
+      "c"  : "−·−·",
+      "d"  : "−··",
+      "e"  : "·",
+      "f"  : "··−·",
+      "g"  : "−−·",
+      "h"  : "····",
+      "i"  : "··",
+      "j"  : "·−−−",
+      "k"  : "−·−",
+      "l"  : "·−··",
+      "m"  : "−−",
+      "n"  : "−·",
+      "o"  : "−−−",
+      "p"  : "·−−·",
+      "q"  : "−−·−",
+      "r"  : "·−·",
+      "s"  : "···",
+      "t"  : "−",
+      "u"  : "··−",
+      "v"  : "···−",
+      "w"  : "·−−",
+      "x"  : "−··−",
+      "y"  : "−·−−",
+      "z"  : "−−··",
+      "1"  : "·−−−−",
+      "2"  : "··−−−",
+      "3"  : "···−−",
+      "4"  : "····−",
+      "5"  : "·····",
+      "6"  : "−····",
+      "7"  : "−−···",
+      "8"  : "−−−··",
+      "9"  : "−−−−·",
+      "0"  : "−−−−−",
+      "à"  : "·−−·−",
+      "ä"  : "·−·−",
+      "è"  : "·−··−",
+      "é"  : "··−··",
+      "ö"  : "−−−·",
+      "ü"  : "··−−",
+      "ß"  : "···−−··",
+      "ñ"  : "−−·−−",
+      "."  : "·−·−·−",
+      ","  : "−−··−−",
+      ":"  : "−−−···",
+      ";"  : "−·−·−·",
+      "?"  : "··−−··",
+      "-"  : "−····−",
+      "_"  : "··−−·−",
+      "("  : "−·−−·",
+      ")"  : "−·−−·−",
+      "'"  : "·−−−−·",
+      "="  : "−···−",
+      "+"  : "·−·−·",
+      "/"  : "−··−·",
+      "@"  : "·−−·−·"
+
+    };
+  
+  if (outputType.includes('audio') && !AudioContext) {
+      alert("Sorry! No audio in your browser 😢");
+      return;
+  }
+  
+  function inputToMorse(input) {
+    if (!input) {return;}
+    const characters = input.toLowerCase().trim().split('');
+    let output = [];
+    characters.forEach(character => {
+      if (morseChars[character]) {
+        output.push(morseChars[character]);
+      }
+    });
+    return output;
+  }
+  
+  function morseCodeToTime(input) {
+    let output = []; 
+    let morseCode = inputToMorse(input);
+    morseCode.forEach((set, index) => {
+      let singleCharacters = set.split('');
+      singleCharacters.forEach(char => {
+        switch (char) {
+          case "/":
+            output.pop();
+            output.push(wordSpace);
+            break;
+          case "·":
+            output.push(dit, symbolSpace);
+            break;
+          case "−":
+            output.push(dah, symbolSpace);
+            break;
+        }
+      });
+      if (output.slice(-1)[0] !== wordSpace) {
+        output.pop();
+        output.push(letterSpace);
+      }
+    });
+    return output;
+  }
+  
+  function playSound(sequence) {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)(),
+    oscillator = audioCtx.createOscillator();
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(toneFrequency, audioCtx.currentTime);
+    let time = audioCtx.currentTime;
+
+    let gainNode = audioCtx.createGain();
+    gainNode.gain.setValueAtTime(0, time);
+    
+    sequence.forEach(function(symbol, index) {
+        if (index % 2) {
+          gainNode.gain.setValueAtTime(0, time);
+          time += symbol / 1000;
+        } else {
+          gainNode.gain.setValueAtTime(1, time);
+          time += symbol / 1000;
+        }
+    });
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    oscillator.start();
+  }
+
+  function runSequence(input) {
+    let timeSequence = morseCodeToTime(input);
+    navigator.vibrate(timeSequence);
+    playSound(timeSequence);
+  };
+  runSequence(input);
+};
+
+(function(){
+  document.getElementById("go").addEventListener('click', function(){
+    let input = document.querySelector('#out').value;
+    morse(input);
+  });
+})();
+    </script>	
+  </body>
+</html>
