@@ -3,9 +3,8 @@ var socket = require('socket.io');
 
 
 var app = express();
-var server = app.listen(4000,function(){
-  console.log('listening all')
-});
+var server = app.listen(process.env.NODE_ENV  || 1234);
+
 
 app.use(express.static('public'));
 
